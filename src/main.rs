@@ -20,18 +20,6 @@ async fn index() -> impl Responder {
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    //    let i2c_bus = I2cdev::new("/dev/i2c-1").unwrap();
-
-    //    let mut bme280 = BME280::new_secondary(i2c_bus, Delay);
-
-    //    bme280.init().unwrap();
-
-    //    let measurements = bme280.measure().unwrap();
-
-    //    println!("Relative Humidity = {}%", measurements.humidity);
-    //    println!("Temperature = {} deg C", measurements.temperature);
-    //    println!("Pressure = {} pascals", measurements.pressure);
-
     HttpServer::new(|| App::new().service(index))
         .bind("0.0.0.1:8080")?
         .run()
