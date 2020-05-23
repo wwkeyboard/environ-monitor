@@ -1,3 +1,39 @@
-fn main() {
-    println!("Hello, world!");
+use actix_web::{get, web, App, HttpServer, Responder};
+use bme280::BME280;
+use linux_embedded_hal::{Delay, I2cdev};
+use std::sync::Mutex;
+
+#[get("/measure")]
+async fn index() -> impl Responder {
+    let i2c_bus = I2cdev::new("/dev/i2c-1").unwrap();
+
+    let mut bme280 = BME280::new_secondary(i2c_bus, Delay);
+
+    bme280.init().unwrap();
+
+    let m = bme280.measure().unwrap();
+    format!(
+        "humid: {}\ntemp: {}\npres: {}\n",
+        m.humidity, m.temperature, m.pressure
+    )
+}
+
+#[actix_rt::main]
+async fn main() -> std::io::Result<()> {
+    //    let i2c_bus = I2cdev::new("/dev/i2c-1").unwrap();
+
+    //    let mut bme280 = BME280::new_secondary(i2c_bus, Delay);
+
+    //    bme280.init().unwrap();
+
+    //    let measurements = bme280.measure().unwrap();
+
+    //    println!("Relative Humidity = {}%", measurements.humidity);
+    //    println!("Temperature = {} deg C", measurements.temperature);
+    //    println!("Pressure = {} pascals", measurements.pressure);
+
+    HttpServer::new(|| App::new().service(index))
+        .bind("0.0.0.1:8080")?
+        .run()
+        .await
 }
