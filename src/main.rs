@@ -3,7 +3,7 @@ use bme280::BME280;
 use linux_embedded_hal::{Delay, I2cdev};
 use std::sync::Mutex;
 
-#[get("/measure")]
+#[get("/metrics")]
 async fn index() -> impl Responder {
     let i2c_bus = I2cdev::new("/dev/i2c-1").unwrap();
 
@@ -12,10 +12,7 @@ async fn index() -> impl Responder {
     bme280.init().unwrap();
 
     let m = bme280.measure().unwrap();
-    format!(
-        "humid: {}\ntemp: {}\npres: {}\n",
-        m.humidity, m.temperature, m.pressure
-    )
+    format!("env_humidity {}\nenv_temperature {}\nenv_pressure {}\n", m.humidity, m.temperature, m.pressure)
 }
 
 #[actix_rt::main]
