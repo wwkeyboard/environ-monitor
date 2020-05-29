@@ -3,6 +3,10 @@ use bme280::BME280;
 use linux_embedded_hal::{Delay, I2cdev};
 use std::sync::Mutex;
 
+struct Sensor {
+
+}
+
 #[get("/metrics")]
 async fn index() -> impl Responder {
     let i2c_bus = I2cdev::new("/dev/i2c-1").unwrap();
